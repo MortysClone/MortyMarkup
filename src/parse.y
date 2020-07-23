@@ -1,15 +1,24 @@
 
 %{
-#include <stdio.h>
-int yylex(void); 
+#include "main.h"
+
 static void yyerror(const char *s);
-extern FILE* yyin;
+//extern FILE* yyin;
 
 #define YYDEBUG 1 
 #define YYERROR_VERBOSE 1
 
 %}
 
+%union{
+	Node* node; 
+}
+
+%pure-parser
+
+%{
+int yylex(YYSTYPE *lval);
+%}
 
 %token 
 		lit_string 
@@ -39,7 +48,7 @@ pcontent : keyword_header_one op_rasgn '{' ptext opt_terms '}'
 		 | keyword_header_two op_rasgn '{' ptext opt_terms '}'
 		 ;
 
-ptext : pstring 
+ptext : pstring
 	  ;
 
 pstring : lit_string 
@@ -63,6 +72,10 @@ term : '\n'
 
 //#include "lex.yy.c"
 
+static void yyerror(const char* s){
+	printf("%s\n", s);
+}
+/*
 static int syntax_check(FILE* f, const char* fname){
 	int n; 
 	yyin = f; 
@@ -109,4 +122,4 @@ int main(int argc, char** argv){
 	return 0;
 }
 
-
+*/

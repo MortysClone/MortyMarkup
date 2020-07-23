@@ -1,5 +1,5 @@
 %{
-#include <stdio.h>
+#include "main.h"
 #include "y.tab.h" //여기에는 BISON이 각 토큰에 대해 어떻게 처리할 것인지에 대한 정보가 들어간다. 
 
 //#define YY_DECL int yylex(YYSTYPE* yylval)
@@ -17,7 +17,7 @@
  ECHO : 매칭된 문자열을 쓴다. 
 
 */
-
+#define YY_DECL int yylex(YYSTYPE* lval)
 
 /*
 [ \t] 이걸로 문서내의 공백과 탭 토큰 무시 개행은 어떻게? 
@@ -33,7 +33,10 @@ TRAIL ([\t \n]|"#"[^\n]*"\n")*
 "->"{TRAIL} return op_rasgn; 
 H1 return keyword_header_one; 
 H2 return keyword_header_two;
-["]([^"\\\n]|\\.|\\\n)*["] return lit_string; 
+["]([^"\\\n]|\\.|\\\n)*["] { 
+	lval->node = node_string_new(yytext+1, strlen(yytext)-1); 
+	return lit_string; 
+};
 Paragraph return keyword_paragraph;
 [}] return yytext[0]; 
 [{]{TRAIL} return yytext[0]; 
