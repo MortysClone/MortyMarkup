@@ -1,16 +1,22 @@
 #include "main.h"
 
 void morty_to_html(char* file){
-	node_parse(file);
+	parser_state state; 
+	state.nerr = 0; 
+	state.lval = NULL; 
+	state.lineno = 1; 
+	state.tline = 1;
+	node_parse(file, &state);
 }
 
-void node_parse(char* file){
+
+void node_parse(char* file, parser_state* p){
 	FILE* fp = fopen(file, "rb");
 	if(fp == NULL){
 		return;
 	}
 	yyrestart(fp); 
-	int n = yyparse(); 
+	int n = yyparse(p); 
 	if(n == 0){
 		printf("Syntax OK!\n");
 	} else {

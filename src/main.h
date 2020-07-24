@@ -6,8 +6,6 @@
 #include <string.h>
 
 
- 
-
 typedef enum{
 	NODE_HEADER_ONE, 
 	NODE_HEADER_TWO,
@@ -32,8 +30,16 @@ typedef struct _Node{
 	struct _Node* next_node; //header -> header and paragraph -> paragraph
 }Node; 
 
+typedef struct parser_state{
+	int nerr; 
+	void *lval; 
+	const char* fname; 
+	int lineno; 
+	int tline; 
+} parser_state;
+
 //yyparse 
-int yyparse();
+int yyparse(parser_state*);
 void yyrestart(FILE* fp);
 
 //make lit_string to malloc 
@@ -43,7 +49,7 @@ Node* node_string_new(char* str, size_t len);
 void print_error(unsigned int err_number);
 
 //call yyparse, yyrestart 
-void node_parse(char* file);
+void node_parse(char* file, parser_state* p);
 
 //dump node for test 
 void node_dump(); 

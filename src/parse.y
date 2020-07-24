@@ -2,7 +2,7 @@
 %{
 #include "main.h"
 
-static void yyerror(const char *s);
+static void yyerror(parser_state* p, const char *s);
 //extern FILE* yyin;
 
 #define YYDEBUG 1 
@@ -15,9 +15,10 @@ static void yyerror(const char *s);
 }
 
 %pure-parser
-
+%parse-param {parser_state* p}
+%lex-param {p}
 %{
-int yylex(YYSTYPE *lval);
+int yylex(YYSTYPE *lval, parser_state* p);
 %}
 
 %token 
@@ -72,54 +73,7 @@ term : '\n'
 
 //#include "lex.yy.c"
 
-static void yyerror(const char* s){
-	printf("%s\n", s);
+static void yyerror(parser_state* p, const char* s){
+	p->nerr++; 
+	printf("line number : [%d]\nerror : %s\n",p->lineno, s);
 }
-/*
-static int syntax_check(FILE* f, const char* fname){
-	int n; 
-	yyin = f; 
-	n = yyparse(); 
-	if(n==0){
-		printf("%s: Syntax OK\n", fname);
-		return 0;
-	}
-	else {
-		printf("%s: Syntax NG\n", fname);
-		return 1; 
-	}
-}
-
-static int syntax_check_file(const char* fname){
-	int n; 
-	FILE* f = fopen(fname, "r"); 
-	if(f == NULL){
-		fprintf(stderr, "failed to open file: %s\n", fname);
-		return 1; 
-	}
-	n = syntax_check(f, fname); 
-	fclose(f); 
-	return n; 
-}
-
-static void yyerror(const char* s){
-	printf("%s\n", s);
-}
-
-int main(int argc, char** argv){
-	int i, n = 0; 
-	if(argc == 1){
-		n = syntax_check(stdin, "stdin");
-	}
-	else {
-		for(i=1; i<argc; i++){
-			n += syntax_check_file(argv[i]); 
-		}
-	}
-	if(n > 0){
-		return 1;
-	} 
-	return 0;
-}
-
-*/

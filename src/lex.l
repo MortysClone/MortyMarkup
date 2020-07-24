@@ -17,34 +17,39 @@
  ECHO : 매칭된 문자열을 쓴다. 
 
 */
-#define YY_DECL int yylex(YYSTYPE* lval)
+#define YY_DECL int yylex(YYSTYPE* lval, parser_state* p)
 
-/*
-[ \t] 이걸로 문서내의 공백과 탭 토큰 무시 개행은 어떻게? 
-TRAIL로도 개행 처리? 중괄호 안에 개행은 처리못할거 같은데 
+static int lex_return(parser_state* p, int c){
+	p->lineno = p->tline; 
+	p->tline = yylineno; 
+	return c; 
+}
 
-[{]{TRAIL} : 여는 중괄호 다음 개행까지 해당 토큰으로 처리 
-[}] : 닫는 중괄호 토큰 처리 
-*/
+#define LEX_RETURN(c) return lex_return(p, c)
+
 %}
+
 %option noyywrap
+%option yylineno 
+
 TRAIL ([\t \n]|"#"[^\n]*"\n")*
 %%
-"->"{TRAIL} return op_rasgn; 
-H1 return keyword_header_one; 
-H2 return keyword_header_two;
+"->"{TRAIL} LEX_RETURN(op_rasgn);
+H1 LEX_RETURN(keyword_header_one); 
+H2 LEX_RETURN(keyword_header_two); 
 ["]([^"\\\n]|\\.|\\\n)*["] { 
 	lval->node = node_string_new(yytext+1, strlen(yytext)-1); 
-	return lit_string; 
+	LEX_RETURN(lit_string);  
 };
-Paragraph return keyword_paragraph;
-[}] return yytext[0]; 
-[{]{TRAIL} return yytext[0]; 
-"\n" return '\n';
-[ \t] return yytext[0]; 
+Paragraph LEX_RETURN(keyword_paragraph); 
+[}] LEX_RETURN(yytext[0]);
+[{]{TRAIL} LEX_RETURN(yytext[0]);
+"\n" LEX_RETURN('\n');
+[ \t] LEX_RETURN(yytext[0]); 
 
 . {
 	fprintf(stderr, "lexical error %s\n", yytext);
+	exit(1);
 };
 
 %%
