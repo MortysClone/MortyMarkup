@@ -38,7 +38,7 @@ TRAIL ([\t \n]|"#"[^\n]*"\n")*
 H1 LEX_RETURN(keyword_header_one); 
 H2 LEX_RETURN(keyword_header_two); 
 ["]([^"\\\n]|\\.|\\\n)*["] { 
-	lval->node = node_string_new(yytext+1, strlen(yytext)-1); 
+	lval->node = node_string_new(yytext+1, strlen(yytext)-2); 
 	LEX_RETURN(lit_string);  
 };
 Paragraph LEX_RETURN(keyword_paragraph); 
