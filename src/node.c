@@ -9,6 +9,7 @@ void morty_to_html(char* file){
 	node_parse(file, &state);
 
 	node_dump(&state);
+	node_free(&state);
 }
 
 
@@ -24,24 +25,29 @@ void node_parse(char* file, parser_state* p){
 	} else {
 		printf("Syntax NG!\n");
 	}
+	fclose(fp);
 }
 
 //넘길 때 len + 1해서 
 Node* node_string_new(char* yytext, size_t len){
 	
 	Node* node = malloc(sizeof(Node));
+	//printf("node_string_new malloc()\n");
 	node->type = NODE_STRING; 
 	node->property = NULL; 
 	node->next_node = NULL;
 
-	node->value.string = (MortyString*)malloc(sizeof(MortyString)); 
+	node->value.string = (MortyString*)malloc(sizeof(MortyString));
+    //printf("MortyString malloc()\n");	
 	node->value.string->str = strndup(yytext, len);
+	//printf("string in MortyString malloc()\n");
 	node->value.string->len = len; 
 	return node; 
 }
 
 Node* node_paragraph(Node* property_node){
 	Node* node = (Node*)malloc(sizeof(Node));
+	//printf("node_paragraph malloc()\n");
 	node->type = NODE_PARAGRAPH;
 	node->value.string = NULL; 
 	node->property = property_node;
@@ -51,6 +57,7 @@ Node* node_paragraph(Node* property_node){
 
 Node* node_header_one(Node* property_node){
 	Node* node = (Node*)malloc(sizeof(Node));	
+	//printf("node_header_one malloc()\n");
 	node->type = NODE_HEADER_ONE; 
 	node->value.string = NULL; 
 	node->property = property_node; 
@@ -60,6 +67,7 @@ Node* node_header_one(Node* property_node){
 
 Node* node_header_two(Node* property_node){
 	Node* node = (Node*)malloc(sizeof(Node)); 
+	//printf("node_header_two malloc()\n");
 	node->type = NODE_HEADER_TWO; 
 	node->value.string = NULL; 
 	node->property = property_node;
@@ -69,6 +77,7 @@ Node* node_header_two(Node* property_node){
 
 Node* pcontent_list_new(void){
 	Node* node = (Node*)malloc(sizeof(Node)); 
+	//printf("node_pcontent_list malloc()\n");
 	node->type = NODE_PCONTENT_LIST; 
 	node->value.string = NULL; 
 	node->property = NULL; 
@@ -87,6 +96,7 @@ void pcontent_list_add(Node* vincible, Node* victim){
 
 Node* paragraph_list_new(void){
 	Node* node = (Node*)malloc(sizeof(Node)); 
+	//printf("node_paragraph_list malloc()\n");
 	node->type = NODE_PARAGRAPH_LIST;
 	node->value.string = NULL; 
 	node->property = NULL; 
@@ -100,6 +110,33 @@ void paragraph_list_add(Node* vincible, Node* victim){
 		curr = curr->next_node; 
 	}
 	curr->next_node = victim; 
+}
+
+void node_free(parser_state* p){
+	printf("node free start!\n");
+	Node* paragraph = p->lval; 
+	while(paragraph != NULL){
+		Node* pcontent = paragraph->property; 
+		while(pcontent != NULL){
+			if(pcontent->property != NULL){
+				//string object free; 
+				//printf("String Object free~\n\n");
+				free(pcontent->property->value.string->str); 
+				free(pcontent->property->value.string); 
+			}
+			free(pcontent->property);
+			//printf("pcontent object free~\n\n");
+			Node* temp = pcontent; 
+			pcontent = pcontent->next_node; 
+			free(temp);
+			//pcontent = pcontent->next_node; 
+		}
+		//printf("paragraph object free~\n\n");
+		Node* temp = paragraph; 
+		paragraph = paragraph->next_node; 
+		free(temp); 
+		//paragraph = paragraph->next_node; 
+	}
 }
 
 
@@ -118,7 +155,7 @@ void node_dump(parser_state* p){
 					break; 
 				case NODE_HEADER_TWO:
 					printf("HEADER_TWO : %s\n", pcontent->property->value.string->str);
-					break; 
+					break;	
 			}
 			pcontent = pcontent->next_node; 
 		}

@@ -63,6 +63,9 @@ void node_parse(char* file, parser_state* p);
 //dump node for test 
 void node_dump(parser_state* p); 
 
+//node free~ 
+void node_free(parser_state* p);
+
 //MortyMarkup to HTML
 void morty_to_html(char* file);
 
