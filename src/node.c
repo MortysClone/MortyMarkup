@@ -1,29 +1,43 @@
 #include "main.h"
 
-void morty_to_html(char* file){
+int morty_to_html(char* file){
 	parser_state state; 
 	state.nerr = 0; 
 	state.lval = NULL; 
 	state.lineno = 1; 
 	state.tline = 1;
-	node_parse(file, &state);
+	int n = node_parse(file, &state);
+	if(n != 0){
+		return 1; 
+	}
 
-	node_dump(&state);
+	//node_dump(&state);
+
+	char* html = make_html(&state);
+	if(html == NULL){
+		return 2;
+	}
+	//printf("print html\n");
+	printf("%s\n",html);
+	free(html);
 	node_free(&state);
+	return 0;
 }
 
 
-void node_parse(char* file, parser_state* p){
+int node_parse(char* file, parser_state* p){
 	FILE* fp = fopen(file, "rb");
 	if(fp == NULL){
-		return;
+		return 1;
 	}
 	yyrestart(fp); 
 	int n = yyparse(p); 
 	if(n == 0){
-		printf("Syntax OK!\n");
+		//printf("Syntax OK!\n");
+		return 0;
 	} else {
 		printf("Syntax NG!\n");
+		return 1;
 	}
 	fclose(fp);
 }
@@ -39,7 +53,7 @@ Node* node_string_new(char* yytext, size_t len){
 
 	node->value.string = (MortyString*)malloc(sizeof(MortyString));
     //printf("MortyString malloc()\n");	
-	node->value.string->str = strndup(yytext, len);
+	node->value.string->str = custom_strndup0(yytext, len);
 	//printf("string in MortyString malloc()\n");
 	node->value.string->len = len; 
 	return node; 
@@ -113,7 +127,7 @@ void paragraph_list_add(Node* vincible, Node* victim){
 }
 
 void node_free(parser_state* p){
-	printf("node free start!\n");
+	//printf("node free start!\n");
 	Node* paragraph = p->lval; 
 	while(paragraph != NULL){
 		Node* pcontent = paragraph->property; 

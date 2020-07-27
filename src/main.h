@@ -58,7 +58,7 @@ Node* node_paragraph(Node* property_node);
 void print_error(unsigned int err_number);
 
 //call yyparse, yyrestart 
-void node_parse(char* file, parser_state* p);
+int node_parse(char* file, parser_state* p);
 
 //dump node for test 
 void node_dump(parser_state* p); 
@@ -67,7 +67,13 @@ void node_dump(parser_state* p);
 void node_free(parser_state* p);
 
 //MortyMarkup to HTML
-void morty_to_html(char* file);
+int morty_to_html(char* file);
+
+//make html 
+char* make_html(parser_state* p); 
+char* custom_strdup(char* s);
+char* custom_strndup0(char* s, size_t n);
+char* string_add(char* vincible, char* victim); 
 
 //pcontent list랑 Paragraph 리스트, 위 둘을 담을 p->lval
 
