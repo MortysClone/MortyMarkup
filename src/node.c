@@ -1,6 +1,6 @@
 #include "main.h"
 
-int morty_to_html(char* file){
+char* morty_to_html(char* file){
 	parser_state state; 
 	state.nerr = 0; 
 	state.lval = NULL; 
@@ -8,20 +8,20 @@ int morty_to_html(char* file){
 	state.tline = 1;
 	int n = node_parse(file, &state);
 	if(n != 0){
-		return 1; 
+		return NULL; 
 	}
 
 	//node_dump(&state);
 
 	char* html = make_html(&state);
 	if(html == NULL){
-		return 2;
+		return NULL;
 	}
 	//printf("print html\n");
-	printf("%s\n",html);
-	free(html);
+	//printf("%s\n",html);
+	//free(html);
 	node_free(&state);
-	return 0;
+	return html;
 }
 
 

@@ -1,6 +1,18 @@
 #ifndef _NODE_H_
 #define _NODE_H_
 
+
+#include <onion/onion.h>
+#include <onion/log.h>
+#include <signal.h>
+#include <netdb.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <time.h>
+
+//include exportlocal.h
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -67,7 +79,7 @@ void node_dump(parser_state* p);
 void node_free(parser_state* p);
 
 //MortyMarkup to HTML
-int morty_to_html(char* file);
+char* morty_to_html(char* file);
 
 //make html 
 char* make_html(parser_state* p); 
@@ -83,8 +95,15 @@ void pcontent_list_add(Node* vincible, Node* victim);
 Node* paragraph_list_new(void); 
 void paragraph_list_add(Node* vincible, Node* victim); 
 
+//when server shutdown 
+void shutdown_server(int _);
+
+//return server url list 
+onion_url* init_url(); 
+
+//view 
+int index_view(void* p, onion_request* req, onion_response* res);
+
+#endif
 
 
-
-
-#endif 
