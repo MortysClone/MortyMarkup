@@ -36,7 +36,7 @@ TRAIL ([\t \n]|"#"[^\n]*"\n")*
 %%
 "->"{TRAIL} LEX_RETURN(op_rasgn);
 H1 LEX_RETURN(keyword_header_one); 
-H2 LEX_RETURN(keyword_header_two); 
+H2 LEX_RETURN(keyword_header_two);  
 ["]([^"\\\n]|\\.|\\\n)*["] { 
 	lval->node = node_string_new(yytext+1, strlen(yytext)-2); 
 	LEX_RETURN(lit_string);  
