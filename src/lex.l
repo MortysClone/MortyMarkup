@@ -48,8 +48,8 @@ Paragraph LEX_RETURN(keyword_paragraph);
 [ \t] LEX_RETURN(yytext[0]); 
 
 . {
-	fprintf(stderr, "lexical error %s\n", yytext);
-	exit(1);
+	//fprintf(stderr, "lexical error %s\n", yytext);
+	//return LEX_RETURN(error);
 };
 
 %%

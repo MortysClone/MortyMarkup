@@ -113,7 +113,7 @@ term : '\n'
 %%
 
 //#include "lex.yy.c"
-
+//error list 만들기 
 static void yyerror(parser_state* p, const char* s){
 	p->nerr++; 
 	printf("line number : [%d]\nerror : %s\n",p->lineno, s);

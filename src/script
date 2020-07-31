@@ -1,4 +1,4 @@
-file mark
+file a.out
 set pagination off
 set breakpoint pending on
 break exit

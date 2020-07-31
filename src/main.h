@@ -11,8 +11,10 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <time.h>
+#include <onion/exportlocal.h>
 
-//include exportlocal.h
+#include "cJSON.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -53,9 +55,16 @@ typedef struct parser_state{
 	int tline; 
 } parser_state;
 
+typedef struct result_html{
+	char* html; 
+	parser_state p; 
+} result_html;
+
 //yyparse 
 int yyparse(parser_state*);
 void yyrestart(FILE* fp);
+//YY_BUFFER_STATE yy_scan_string ( const char *yy_str   );
+//int yy_scan_string ( const char *yy_str   );
 
 //make lit_string to malloc 
 Node* node_string_new(char* str, size_t len);
@@ -70,7 +79,7 @@ Node* node_paragraph(Node* property_node);
 void print_error(unsigned int err_number);
 
 //call yyparse, yyrestart 
-int node_parse(char* file, parser_state* p);
+int node_parse(const char* input, parser_state* p);
 
 //dump node for test 
 void node_dump(parser_state* p); 
@@ -79,7 +88,7 @@ void node_dump(parser_state* p);
 void node_free(parser_state* p);
 
 //MortyMarkup to HTML
-char* morty_to_html(char* file);
+char* morty_to_html(const char* input);
 
 //make html 
 char* make_html(parser_state* p); 
@@ -95,6 +104,7 @@ void pcontent_list_add(Node* vincible, Node* victim);
 Node* paragraph_list_new(void); 
 void paragraph_list_add(Node* vincible, Node* victim); 
 
+
 //when server shutdown 
 void shutdown_server(int _);
 
@@ -103,6 +113,14 @@ onion_url* init_url();
 
 //view 
 int index_view(void* p, onion_request* req, onion_response* res);
+int docs_view(void* p, onion_request* req, onion_response* res);
+int community_view(void* p, onion_request* req, onion_response* res);
+int write_view(void* p, onion_request* req, onion_response* res);
+int read_view(void* p, onion_request* req, onion_response* res);
+int delete_view(void* p, onion_request* req, onion_response* res);
+int translate_view(void* p, onion_request* req, onion_response* res);
+
+cJSON* make_translate_json(int err, const char* value);
 
 #endif
 

@@ -1,17 +1,19 @@
 #include "main.h"
 
-char* morty_to_html(char* file){
+char* morty_to_html(const char* input){
 	parser_state state; 
 	state.nerr = 0; 
 	state.lval = NULL; 
 	state.lineno = 1; 
 	state.tline = 1;
-	int n = node_parse(file, &state);
+	int n = node_parse(input, &state);
 	if(n != 0){
 		return NULL; 
 	}
 
 	//node_dump(&state);
+
+	//result_html* result = (result_html*)malloc(sizeof(result_html)); 
 
 	char* html = make_html(&state);
 	if(html == NULL){
@@ -25,12 +27,14 @@ char* morty_to_html(char* file){
 }
 
 
-int node_parse(char* file, parser_state* p){
-	FILE* fp = fopen(file, "rb");
+int node_parse(const char* input, parser_state* p){
+	/*FILE* fp = fopen(file, "rb");
 	if(fp == NULL){
 		return 1;
 	}
-	yyrestart(fp); 
+	*/
+	//yyrestart(fp); 
+	yy_scan_string(input);
 	int n = yyparse(p); 
 	if(n == 0){
 		//printf("Syntax OK!\n");
@@ -39,7 +43,8 @@ int node_parse(char* file, parser_state* p){
 		printf("Syntax NG!\n");
 		return 1;
 	}
-	fclose(fp);
+	//yylex_destory(); 
+	//fclose(fp);
 }
 
 //넘길 때 len + 1해서 
