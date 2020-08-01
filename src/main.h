@@ -52,12 +52,13 @@ typedef struct parser_state{
 	Node *lval; 
 	const char* fname; 
 	int lineno; 
-	int tline; 
+	int tline;
+   	char* err_string; 	
 } parser_state;
 
 typedef struct result_html{
-	char* html; 
-	parser_state p; 
+	char* value;  
+	int check; 
 } result_html;
 
 //yyparse 
@@ -88,7 +89,7 @@ void node_dump(parser_state* p);
 void node_free(parser_state* p);
 
 //MortyMarkup to HTML
-char* morty_to_html(const char* input);
+result_html* morty_to_html(const char* input);
 
 //make html 
 char* make_html(parser_state* p); 
@@ -121,7 +122,7 @@ int delete_view(void* p, onion_request* req, onion_response* res);
 int translate_view(void* p, onion_request* req, onion_response* res);
 int docs_detail_view(void* p, onion_request* req, onion_response* res); 
 
-cJSON* make_json(int err, const char* value);
+cJSON* make_json(int err, char* value);
 
 #endif
 

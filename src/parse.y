@@ -114,11 +114,17 @@ term : '\n'
 
 //#include "lex.yy.c"
 //error list 만들기 
+/*
+에러 발생시 현재 위치에 대한 context를 만들어 해당 context부터 free해나가는 상황을 만들어야함. 
+*/
+
 static void yyerror(parser_state* p, const char* s){
 	p->nerr++; 
-
-	printf("line number : [%d]\nerror : %s\n",p->lineno, s);
+	//p->err_string = custom_strdup((char*)s); 
+	size_t needed = snprintf(NULL, 0, "line : [%d], %s", p->lineno, s) + 1;
+    p->err_string = (char*)malloc(needed); 
+    sprintf(p->err_string, "line : [%d], %s", p->lineno, s);
+	//printf("line number : [%d]\nerror : %s\n",p->lineno, s);
 }
-
 
 

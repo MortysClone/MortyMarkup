@@ -1,32 +1,35 @@
 #include "main.h"
 
-char* morty_to_html(const char* input){
+result_html* morty_to_html(const char* input){
 	parser_state state; 
 	state.nerr = 0; 
 	state.lval = NULL; 
 	state.lineno = 1; 
 	state.tline = 1;
+	state.err_string = NULL; 
 	int n = node_parse(input, &state);
+	result_html* result = (result_html*)malloc(sizeof(result_html));
+	if(result == NULL){
+		printf("malloc error\n");
+		return NULL;
+	}
 	if(n != 0){
 		//node_dump(&state);
 		node_free(&state);
-		return NULL; 
+		result->value = state.err_string; 
+		result->check = 0; 
+		return result;  
 	}
-
-	//node_dump(&state);
-
-	//result_html* result = (result_html*)malloc(sizeof(result_html)); 
 
 	char* html = make_html(&state);
+	result->value = html; 
+	result->check = 1; 
 	if(html == NULL){
-		return NULL;
+		result->value = NULL; 
+		result->check = 0; 
 	}
-	//printf("print html\n");
-	//printf("%s\n",html);
-	//free(html);
-	//node_dump(&state);
 	node_free(&state); //syntax error가 났을 때도 node free를 해줘야할듯
-	return html;
+	return result; 
 }
 
 
@@ -108,7 +111,6 @@ Node* pcontent_list_new(void){
 
 void pcontent_list_add(Node* vincible, Node* victim){
 	Node* curr = vincible;	
-	printf("pADD\n");
 	while(curr->next_node != NULL){
 		curr = curr->next_node; 
 	}
