@@ -31,7 +31,7 @@ onion_url* init_url(){
 	onion_url_add(urls, "write", write_view);
 	onion_url_add(urls, "read", read_view); 
 	onion_url_add(urls, "delete", delete_view); 	
-	
+	onion_url_add(urls, "docs_detail", docs_detail_view); 
 	//Markup to html code api
 	onion_url_add(urls, "translate", translate_view);
 	return urls;

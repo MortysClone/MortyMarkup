@@ -8,6 +8,8 @@ char* morty_to_html(const char* input){
 	state.tline = 1;
 	int n = node_parse(input, &state);
 	if(n != 0){
+		//node_dump(&state);
+		node_free(&state);
 		return NULL; 
 	}
 
@@ -22,7 +24,8 @@ char* morty_to_html(const char* input){
 	//printf("print html\n");
 	//printf("%s\n",html);
 	//free(html);
-	node_free(&state);
+	//node_dump(&state);
+	node_free(&state); //syntax error가 났을 때도 node free를 해줘야할듯
 	return html;
 }
 
@@ -40,7 +43,6 @@ int node_parse(const char* input, parser_state* p){
 		//printf("Syntax OK!\n");
 		return 0;
 	} else {
-		printf("Syntax NG!\n");
 		return 1;
 	}
 	//yylex_destory(); 
@@ -105,7 +107,8 @@ Node* pcontent_list_new(void){
 }
 
 void pcontent_list_add(Node* vincible, Node* victim){
-	Node* curr = vincible; 
+	Node* curr = vincible;	
+	printf("pADD\n");
 	while(curr->next_node != NULL){
 		curr = curr->next_node; 
 	}
@@ -163,6 +166,9 @@ void node_dump(parser_state* p){
 	printf("node dump start!\n");
 	
 	//p->lval->next_node 인 이유는 pcontent와 paragraph의 첫 번째노드는 헤더 노드이다.
+	if(p->lval == NULL){
+		return;
+	}
 	Node* paragraph = p->lval->next_node; 
 	while(paragraph != NULL){
 		Node* pcontent = paragraph->property->next_node;  

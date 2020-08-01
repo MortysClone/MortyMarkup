@@ -119,8 +119,9 @@ int write_view(void* p, onion_request* req, onion_response* res);
 int read_view(void* p, onion_request* req, onion_response* res);
 int delete_view(void* p, onion_request* req, onion_response* res);
 int translate_view(void* p, onion_request* req, onion_response* res);
+int docs_detail_view(void* p, onion_request* req, onion_response* res); 
 
-cJSON* make_translate_json(int err, const char* value);
+cJSON* make_json(int err, const char* value);
 
 #endif
 

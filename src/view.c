@@ -14,6 +14,44 @@ int docs_view(void* p, onion_request* req, onion_response* res){
 	return OCS_PROCESSED; 
 }
 
+int docs_detail_view(void* p, onion_request* req, onion_response* res){
+	const char* id = NULL; 
+	cJSON* monitor = NULL; 
+	char* res_string = NULL; 
+
+	/*
+	if(!(onion_request_get_flags(req) & OR_GET)){
+		printf("%d",onion_request_get_flags(req) & OR_GET);
+		monitor = make_json(False, "please use GET method"); 
+		if(monitor == NULL){
+			return OCS_INTERNAL_ERROR; 
+		}
+		goto end; 
+	 } */
+	
+	id = onion_request_get_query(req, "id"); 
+	if(id == NULL){
+		monitor = make_json(False, "please input query parameter");
+		if(monitor == NULL){
+			return OCS_INTERNAL_ERROR; 
+		}
+		goto end; 
+	}
+
+	monitor = make_json(True, "OK  Good!"); 
+	if(monitor == NULL){
+		return OCS_INTERNAL_ERROR; 
+	}
+	printf("%s\n", id); //id는 페이지 종류 값 
+
+end:
+	res_string = cJSON_Print(monitor);
+	cJSON_Delete(monitor);
+	onion_response_printf(res, "%s", res_string);
+	free(res_string); 
+	return OCS_PROCESSED; 
+}
+
 int community_view(void* p, onion_request* req, onion_response* res){
 	return OCS_PROCESSED; 
 }
@@ -30,7 +68,7 @@ int delete_view(void* p, onion_request* req, onion_response* res){
 	return OCS_PROCESSED;
 }
 
-cJSON* make_translate_json(int err, const char* value){
+cJSON* make_json(int err, const char* value){
 	cJSON* monitor = cJSON_CreateObject(); 
 	if(cJSON_AddNumberToObject(monitor, "success", err) == NULL){
 		cJSON_Delete(monitor); 
@@ -52,7 +90,7 @@ int translate_view(void* p, onion_request* req, onion_response* res){
 	const char* req_data = NULL; //previous free 
 
 	if(!(onion_request_get_flags(req) & OR_POST)){
-		monitor = make_translate_json(False, "please use POST method");
+		monitor = make_json(False, "please use POST method");
 		if(monitor == NULL) {
 			return OCS_INTERNAL_ERROR; 
 		}
@@ -61,7 +99,7 @@ int translate_view(void* p, onion_request* req, onion_response* res){
 	
 	req_data = onion_request_get_post(req, "data"); 
 	if(req_data == NULL){
-		monitor = make_translate_json(False, "please input data");
+		monitor = make_json(False, "please input data");
 		if(monitor == NULL){
 			return OCS_INTERNAL_ERROR;
 		}
@@ -70,14 +108,14 @@ int translate_view(void* p, onion_request* req, onion_response* res){
 	html = morty_to_html(req_data);
 	//free((char*)req_data); 
 	if(html == NULL){
-		monitor = make_translate_json(False, "Syntax Error");
+		monitor = make_json(False, "Syntax Error");
 		if(monitor == NULL){
 			return OCS_INTERNAL_ERROR; 
 		}
 		goto end; 
 	} 
 	else{
-		monitor = make_translate_json(True, html);
+		monitor = make_json(True, html);
 		free(html); 
 		if(monitor == NULL){
 			return OCS_INTERNAL_ERROR; 
