@@ -115,7 +115,12 @@ pcontent : keyword_header_one op_rasgn '{' lit_string opt_terms '}'
 		 | keyword_header_two op_rasgn '{' lit_string opt_terms '}'
 		 {
 		 }
+		 /* new variable */
 		 | keyword_var keyword_ident '=' expr
+		 {
+		 }
+		 /* ordinary variable */
+		 | keyword_ident '=' expr 
 		 {
 		 }
 		 | keyword_if '(' condition ')' op_rasgn '{' pcontents opt_terms '}' opt_else

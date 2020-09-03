@@ -1,0 +1,5 @@
+Paragraph->{
+	if(good > 3)->{
+		var a = 1
+	} 
+}

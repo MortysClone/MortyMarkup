@@ -5,6 +5,7 @@ Paragraph->{
 	var good =  	3 * (3 + 2)
 	var test = "asd"
 	var a = 1 + 2 + "112" * 2
+    var good = a
 	
 	H2->{"asdadddsdads"}
 	
@@ -12,7 +13,10 @@ Paragraph->{
 		H2->{"Hello WOrld"}
 	} elif(good < 3)->{
 		H1->{"Hello WOrld"}
-	} else->{
+	} elif(good < 3)->{
+		H1->{"asdsaadd"}
+	} 
+	else->{
 		H2->{"Good World"}
 	}
 }
