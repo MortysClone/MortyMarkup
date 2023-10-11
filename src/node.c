@@ -40,7 +40,8 @@ int node_parse(const char* input, parser_state* p){
 	}
 	*/
 	//yyrestart(fp); 
-	yy_scan_string(input);
+	yy_switch_to_buffer(yy_scan_string(input));
+	//yy_scan_string(input);
 	int n = yyparse(p); 
 	if(n == 0){
 		//printf("Syntax OK!\n");

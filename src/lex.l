@@ -1,6 +1,6 @@
 %{
 #include "main.h"
-#include "y.tab.h" //여기에는 BISON이 각 토큰에 대해 어떻게 처리할 것인지에 대한 정보가 들어간다. 
+#include "parse.tab.h" //여기에는 BISON이 각 토큰에 대해 어떻게 처리할 것인지에 대한 정보가 들어간다. 
 
 //#define YY_DECL int yylex(YYSTYPE* yylval)
 

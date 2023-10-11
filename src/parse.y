@@ -18,11 +18,10 @@ static void yyerror(parser_state* p, const char *s);
 %type <node> paragraph pcontents pcontent pstring
 %type <node> ptext
 
-%pure-parser
 %parse-param {parser_state* p}
-%lex-param {p}
+%lex-param {parser_state* p}
 %{
-int yylex(YYSTYPE *lval, parser_state* p);
+int yylex(parser_state* p);
 %}
 
 %token 

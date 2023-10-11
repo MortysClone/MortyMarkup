@@ -2,3 +2,10 @@
 lex.yy.c 
 y.tab.h
 y.tab.c
+parse.tab.c
+parse.tab.h
+mark
+a.out
+*.out
+.out
+script

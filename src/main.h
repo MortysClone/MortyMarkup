@@ -61,7 +61,12 @@ typedef struct result_html{
 	int check; 
 } result_html;
 
+
+typedef struct yy_buffer_state *YY_BUFFER_STATE;
+
 //yyparse 
+void yy_switch_to_buffer ( YY_BUFFER_STATE new_buffer  );
+YY_BUFFER_STATE yy_scan_string ( const char *yy_str  );
 int yyparse(parser_state*);
 void yyrestart(FILE* fp);
 //YY_BUFFER_STATE yy_scan_string ( const char *yy_str   );
